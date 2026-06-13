@@ -1,5 +1,5 @@
 module.exports = {
   testEnvironment: 'node',
-  testPathPattern: 'api/__tests__',
+  testMatch: ['<rootDir>/api/__tests__/**/*.test.js'],
   clearMocks: true,
 }
