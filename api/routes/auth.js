@@ -12,38 +12,42 @@ const COOKIE_OPTIONS = {
   maxAge: 7 * 24 * 60 * 60 * 1000,
 }
 
-router.post('/login', async (req, res) => {
-  const { email, password } = req.body
-  if (!email || !password) {
-    return res.status(400).json({ error: 'Email và mật khẩu là bắt buộc' })
+router.post('/login', async (req, res, next) => {
+  try {
+    const { email, password } = req.body
+    if (!email || !password) {
+      return res.status(400).json({ error: 'Email và mật khẩu là bắt buộc' })
+    }
+
+    const user = await prisma.user.findUnique({ where: { email } })
+    if (!user || !user.isActive) {
+      return res.status(401).json({ error: 'Email hoặc mật khẩu không đúng' })
+    }
+
+    const valid = await bcrypt.compare(password, user.passwordHash)
+    if (!valid) {
+      return res.status(401).json({ error: 'Email hoặc mật khẩu không đúng' })
+    }
+
+    const accessToken = jwt.sign(
+      { id: user.id, role: user.role, name: user.name },
+      process.env.JWT_SECRET,
+      { expiresIn: '15m' }
+    )
+    const refreshToken = jwt.sign(
+      { id: user.id },
+      process.env.JWT_REFRESH_SECRET,
+      { expiresIn: '7d' }
+    )
+
+    res.cookie('refreshToken', refreshToken, COOKIE_OPTIONS)
+    res.json({
+      accessToken,
+      user: { id: user.id, name: user.name, role: user.role },
+    })
+  } catch (err) {
+    next(err)
   }
-
-  const user = await prisma.user.findUnique({ where: { email } })
-  if (!user || !user.isActive) {
-    return res.status(401).json({ error: 'Email hoặc mật khẩu không đúng' })
-  }
-
-  const valid = await bcrypt.compare(password, user.passwordHash)
-  if (!valid) {
-    return res.status(401).json({ error: 'Email hoặc mật khẩu không đúng' })
-  }
-
-  const accessToken = jwt.sign(
-    { id: user.id, role: user.role, name: user.name },
-    process.env.JWT_SECRET,
-    { expiresIn: '15m' }
-  )
-  const refreshToken = jwt.sign(
-    { id: user.id },
-    process.env.JWT_REFRESH_SECRET,
-    { expiresIn: '7d' }
-  )
-
-  res.cookie('refreshToken', refreshToken, COOKIE_OPTIONS)
-  res.json({
-    accessToken,
-    user: { id: user.id, name: user.name, role: user.role },
-  })
 })
 
 router.post('/refresh', async (req, res) => {
