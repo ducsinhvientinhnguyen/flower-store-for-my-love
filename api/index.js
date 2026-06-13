@@ -11,6 +11,15 @@ app.use(cors({
 app.use(express.json())
 app.use(cookieParser())
 
+app.get('/api/health', (req, res) => {
+  res.json({ ok: true, env: process.env.NODE_ENV, ts: Date.now() })
+})
+
 app.use('/api/auth', require('./routes/auth'))
+
+app.use((err, req, res, next) => {
+  console.error('[API Error]', err)
+  res.status(500).json({ error: err.message || 'Internal server error' })
+})
 
 module.exports = app
