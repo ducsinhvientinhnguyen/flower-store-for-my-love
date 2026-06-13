@@ -1,5 +1,6 @@
 import { Navigate, Outlet, NavLink, useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../store/authStore'
+import { useQueryClient } from '@tanstack/react-query'
 
 const NAV_ITEMS = [
   { path: '/',           label: 'Bán hàng',  icon: '🛒', roles: ['OWNER', 'STAFF'] },
@@ -13,12 +14,14 @@ const NAV_ITEMS = [
 export default function Layout() {
   const { user, clearAuth } = useAuthStore()
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
 
   if (!user) return <Navigate to="/login" replace />
 
   const visibleNav = NAV_ITEMS.filter(item => item.roles.includes(user.role))
 
   function handleLogout() {
+    queryClient.clear()
     clearAuth()
     navigate('/login')
   }
@@ -52,6 +55,7 @@ export default function Layout() {
         <div className="p-2 border-t border-slate-700">
           <div className="text-xs text-slate-500 text-center mb-2 truncate px-1">{user.name}</div>
           <button
+            type="button"
             onClick={handleLogout}
             className="w-full text-xs text-slate-400 hover:text-red-400 py-2 rounded transition-colors"
           >
@@ -66,7 +70,7 @@ export default function Layout() {
         <header className="md:hidden flex items-center justify-between px-4 h-14 bg-slate-800 border-b border-slate-700 sticky top-0 z-10">
           <span className="text-lg">🌸</span>
           <span className="text-sm text-slate-300">{user.name}</span>
-          <button onClick={handleLogout} className="text-xs text-slate-400 hover:text-red-400">
+          <button type="button" onClick={handleLogout} className="text-xs text-slate-400 hover:text-red-400">
             Đăng xuất
           </button>
         </header>

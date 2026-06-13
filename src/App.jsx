@@ -8,15 +8,22 @@ import PreOrdersPage from './pages/PreOrdersPage'
 import CustomersPage from './pages/CustomersPage'
 import ReportsPage from './pages/ReportsPage'
 import ExpensesPage from './pages/ExpensesPage'
+import { useAuthStore } from './store/authStore'
 
 const queryClient = new QueryClient()
+
+function GuestRoute({ children }) {
+  const user = useAuthStore(s => s.user)
+  if (user) return <Navigate to="/" replace />
+  return children
+}
 
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <Routes>
-          <Route path="/login" element={<LoginPage />} />
+          <Route path="/login" element={<GuestRoute><LoginPage /></GuestRoute>} />
           <Route path="/" element={<Layout />}>
             <Route index element={<POSPage />} />
             <Route path="inventory" element={<InventoryPage />} />
