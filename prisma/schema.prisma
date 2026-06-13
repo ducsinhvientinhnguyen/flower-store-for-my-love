@@ -60,7 +60,7 @@ model User {
 model Customer {
   id        String   @id @default(uuid())
   name      String
-  phone     String
+  phone     String   @unique
   email     String?
   notes     String?
   createdAt DateTime @default(now())
@@ -71,7 +71,7 @@ model Customer {
 
 model FlowerType {
   id            String   @id @default(uuid())
-  name          String
+  name          String   @unique
   unit          String
   costPerUnit   Decimal  @db.Decimal(10, 2)
   currentStock  Decimal  @db.Decimal(10, 2) @default(0)
@@ -87,8 +87,9 @@ model Product {
   category  String
   basePrice Decimal @db.Decimal(10, 2)
   imageUrl  String?
-  isCustom  Boolean @default(false)
-  isActive  Boolean @default(true)
+  isCustom  Boolean  @default(false)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
 
   orderItems OrderItem[]
 }
@@ -106,6 +107,10 @@ model Order {
   customer  Customer?   @relation(fields: [customerId], references: [id])
   createdBy User        @relation(fields: [createdById], references: [id])
   items     OrderItem[]
+
+  @@index([customerId])
+  @@index([createdById])
+  @@index([createdAt])
 }
 
 model OrderItem {
@@ -118,8 +123,10 @@ model OrderItem {
   subtotal      Decimal  @db.Decimal(10, 2)
   customDetails Json?
 
-  order   Order    @relation(fields: [orderId], references: [id])
+  order   Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
   product Product? @relation(fields: [productId], references: [id])
+
+  @@index([orderId])
 }
 
 model PreOrder {
@@ -134,9 +141,14 @@ model PreOrder {
   status        PreOrderStatus @default(PENDING)
   note          String?
   createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
 
   customer  Customer @relation(fields: [customerId], references: [id])
   createdBy User     @relation(fields: [createdById], references: [id])
+
+  @@index([customerId])
+  @@index([createdById])
+  @@index([requiredDate])
 }
 
 model InventoryTransaction {
@@ -150,6 +162,10 @@ model InventoryTransaction {
 
   flowerType FlowerType @relation(fields: [flowerTypeId], references: [id])
   createdBy  User       @relation(fields: [createdById], references: [id])
+
+  @@index([flowerTypeId])
+  @@index([createdById])
+  @@index([createdAt])
 }
 
 model Expense {
@@ -162,4 +178,7 @@ model Expense {
   createdAt   DateTime        @default(now())
 
   createdBy User @relation(fields: [createdById], references: [id])
+
+  @@index([createdById])
+  @@index([expenseDate])
 }
