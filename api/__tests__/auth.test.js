@@ -79,7 +79,19 @@ describe('POST /api/auth/login', () => {
 })
 
 describe('POST /api/auth/refresh', () => {
-  it('trả về accessToken mới khi có refreshToken hợp lệ', async () => {
+  const mockUser = {
+    id: 'user-1',
+    name: 'Chủ shop',
+    email: 'owner@test.com',
+    passwordHash: bcrypt.hashSync('password123', 10),
+    role: 'OWNER',
+    isActive: true,
+  }
+
+  beforeEach(() => jest.clearAllMocks())
+
+  it('trả về accessToken mới với đủ payload {id,role,name}', async () => {
+    _mockFindUnique.mockResolvedValue(mockUser)
     const refreshToken = jwt.sign({ id: 'user-1' }, 'test-refresh-secret', { expiresIn: '7d' })
 
     const res = await request(app)
@@ -88,6 +100,9 @@ describe('POST /api/auth/refresh', () => {
 
     expect(res.status).toBe(200)
     expect(res.body.accessToken).toBeDefined()
+    const decoded = jwt.verify(res.body.accessToken, 'test-secret')
+    expect(decoded.role).toBe('OWNER')
+    expect(decoded.name).toBe('Chủ shop')
   })
 
   it('trả về 401 khi không có refreshToken', async () => {

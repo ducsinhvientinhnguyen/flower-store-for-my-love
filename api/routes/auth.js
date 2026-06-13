@@ -46,14 +46,18 @@ router.post('/login', async (req, res) => {
   })
 })
 
-router.post('/refresh', (req, res) => {
+router.post('/refresh', async (req, res) => {
   const token = req.cookies?.refreshToken
   if (!token) return res.status(401).json({ error: 'Không có refresh token' })
 
   try {
     const payload = jwt.verify(token, process.env.JWT_REFRESH_SECRET)
+    const user = await prisma.user.findUnique({ where: { id: payload.id } })
+    if (!user || !user.isActive) {
+      return res.status(401).json({ error: 'Tài khoản không hợp lệ' })
+    }
     const accessToken = jwt.sign(
-      { id: payload.id },
+      { id: user.id, role: user.role, name: user.name },
       process.env.JWT_SECRET,
       { expiresIn: '15m' }
     )
