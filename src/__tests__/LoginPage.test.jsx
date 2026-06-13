@@ -69,4 +69,17 @@ describe('LoginPage', () => {
       expect(screen.getByText(/email hoặc mật khẩu không đúng/i)).toBeInTheDocument()
     )
   })
+
+  it('hiển thị lỗi khi mất kết nối', async () => {
+    api.post.mockRejectedValue(new Error('Network error'))
+
+    renderLogin()
+    await userEvent.type(screen.getByLabelText(/email/i), 'owner@test.com')
+    await userEvent.type(screen.getByLabelText(/mật khẩu/i), 'password123')
+    await userEvent.click(screen.getByRole('button', { name: /đăng nhập/i }))
+
+    await waitFor(() =>
+      expect(screen.getByText(/không thể kết nối/i)).toBeInTheDocument()
+    )
+  })
 })

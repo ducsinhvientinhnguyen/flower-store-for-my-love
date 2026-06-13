@@ -16,15 +16,20 @@ export default function LoginPage() {
     setLoading(true)
     setError('')
 
-    const res = await api.post('/auth/login', { email, password })
-    if (res.ok) {
-      const data = await res.json()
-      setAuth(data.user, data.accessToken)
-      navigate('/')
-    } else {
-      setError('Email hoặc mật khẩu không đúng')
+    try {
+      const res = await api.post('/auth/login', { email, password })
+      if (res.ok) {
+        const data = await res.json()
+        setAuth(data.user, data.accessToken)
+        navigate('/')
+      } else {
+        setError('Email hoặc mật khẩu không đúng')
+      }
+    } catch {
+      setError('Không thể kết nối đến máy chủ')
+    } finally {
+      setLoading(false)
     }
-    setLoading(false)
   }
 
   return (
