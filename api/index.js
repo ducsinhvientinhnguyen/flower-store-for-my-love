@@ -16,6 +16,7 @@ app.get('/api/health', (req, res) => {
 })
 
 app.use('/api/auth', require('./routes/auth'))
+app.use('/api/products', require('./routes/products'))
 
 app.use((err, req, res, next) => {
   console.error('[API Error]', err)
