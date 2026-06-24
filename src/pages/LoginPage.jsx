@@ -21,7 +21,7 @@ export default function LoginPage() {
       if (res.ok) {
         const data = await res.json()
         setAuth(data.user, data.accessToken)
-        navigate('/')
+        navigate('/app')
       } else {
         setError('Email hoặc mật khẩu không đúng')
       }
@@ -33,17 +33,17 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-900 flex items-center justify-center px-4">
-      <div className="w-full max-w-sm bg-slate-800 rounded-xl p-8 shadow-xl">
+    <div className="min-h-screen bg-cream flex items-center justify-center px-4">
+      <div className="w-full max-w-sm bg-white rounded-xl p-8 shadow-xl border border-charcoal/10">
         <div className="text-center mb-8">
           <div className="text-5xl mb-3">🌸</div>
-          <h1 className="text-2xl font-bold text-white">Flower Store</h1>
-          <p className="text-slate-400 text-sm mt-1">Quản lý cửa hàng hoa</p>
+          <h1 className="text-2xl font-serif font-bold text-charcoal">Flower Store</h1>
+          <p className="text-charcoal-soft text-sm mt-1">Quản lý cửa hàng hoa</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="email" className="block text-sm text-slate-400 mb-1">
+            <label htmlFor="email" className="block text-sm text-charcoal-soft mb-1">
               Email
             </label>
             <input
@@ -51,14 +51,14 @@ export default function LoginPage() {
               type="email"
               value={email}
               onChange={e => setEmail(e.target.value)}
-              className="w-full bg-slate-700 text-white rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 placeholder-slate-500"
+              className="w-full bg-cream text-charcoal rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold placeholder-charcoal-soft/50 border border-charcoal/10"
               placeholder="admin@flowerstore.com"
               required
             />
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm text-slate-400 mb-1">
+            <label htmlFor="password" className="block text-sm text-charcoal-soft mb-1">
               Mật khẩu
             </label>
             <input
@@ -66,19 +66,19 @@ export default function LoginPage() {
               type="password"
               value={password}
               onChange={e => setPassword(e.target.value)}
-              className="w-full bg-slate-700 text-white rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full bg-cream text-charcoal rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold border border-charcoal/10"
               required
             />
           </div>
 
           {error && (
-            <p className="text-red-400 text-sm bg-red-400/10 rounded-lg px-3 py-2">{error}</p>
+            <p className="text-red-700 text-sm bg-red-100 rounded-lg px-3 py-2">{error}</p>
           )}
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg px-4 py-2.5 font-medium transition-colors"
+            className="w-full bg-gold hover:bg-gold-light disabled:opacity-50 disabled:cursor-not-allowed text-cream rounded-lg px-4 py-2.5 font-medium transition-colors"
           >
             {loading ? 'Đang đăng nhập...' : 'Đăng nhập'}
           </button>

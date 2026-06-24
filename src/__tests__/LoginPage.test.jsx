@@ -43,7 +43,7 @@ describe('LoginPage', () => {
     expect(screen.getByRole('button', { name: /đăng nhập/i })).toBeInTheDocument()
   })
 
-  it('navigate về / sau khi đăng nhập thành công', async () => {
+  it('navigate về /app sau khi đăng nhập thành công', async () => {
     api.post.mockResolvedValue({
       ok: true,
       json: async () => ({ accessToken: 'tok', user: { id: '1', name: 'A', role: 'OWNER' } }),
@@ -54,7 +54,7 @@ describe('LoginPage', () => {
     await userEvent.type(screen.getByLabelText(/mật khẩu/i), 'password123')
     await userEvent.click(screen.getByRole('button', { name: /đăng nhập/i }))
 
-    await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith('/'))
+    await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith('/app'))
   })
 
   it('hiển thị lỗi khi credentials sai', async () => {
