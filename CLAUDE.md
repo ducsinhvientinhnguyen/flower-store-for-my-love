@@ -117,6 +117,18 @@ Mọi mutation đều có `createdById` → audit trail đầy đủ.
 - [x] App shell: Layout (responsive sidebar/bottom nav) + 6 placeholder pages
 - [x] Deploy lên Vercel + Neon
 
+### Design System + Landing Page ✅ HOÀN THÀNH
+Re-skin toàn app theo "Cream Editorial" + landing page công khai.
+- [x] Design tokens Tailwind (cream/charcoal/gold + font Libre Baskerville/Inter)
+- [x] Framer Motion (`motion` v12): FadeInView, ParallaxLayer, PageTransition + 3 Vitest tests
+- [x] API công khai `GET /api/products/featured` (không cần auth, tối đa 6) + 2 Jest tests
+- [x] Seed 6 sản phẩm mẫu (ảnh Unsplash) — **cần chạy `npm run db:seed` trên production**
+- [x] Landing page tại `/` (hero parallax, câu chuyện, lưới sản phẩm nổi bật, footer) + 2 Vitest tests
+- [x] Chuyển app quản lý sang `/app/*`, restyle Layout + 6 trang + LoginPage; redirect sau login → `/app` + cập nhật App routing tests
+- [x] Verify: frontend 11/11, API 8/8, build OK — merge vào `master`
+
+> **Lưu ý route:** App quản lý giờ nằm dưới `/app/*` (không còn ở `/`). `/` là landing page công khai.
+
 ### Plan 2: POS Module ⏳ CHƯA BẮT ĐẦU
 Màn hình bán hàng: lưới sản phẩm + giỏ hàng + modal bó custom + thanh toán + trừ kho.
 
@@ -133,3 +145,5 @@ Báo cáo doanh thu (Recharts), sổ quỹ / chi phí (owner only).
 
 - Spec: `docs/superpowers/specs/2026-06-13-flower-store-design.md`
 - Plan 1: `docs/superpowers/plans/2026-06-13-foundation.md`
+- Spec (Design System + Landing): `docs/superpowers/specs/2026-06-18-design-system-landing-design.md`
+- Plan (Design System + Landing): `docs/superpowers/plans/2026-06-18-design-system-landing.md`
